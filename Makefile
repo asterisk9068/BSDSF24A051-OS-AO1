@@ -3,17 +3,23 @@ CC = gcc
 CFLAGS = -Wall -g
 INC = -I./include
 
-OBJS = obj/main.o obj/mystrfunctions.o obj/myfilefunctions.o
-TARGET = bin/client
+# Variables for paths
+STATIC_LIB = lib/libmyutils.a
+TARGET = bin/client_static
+OBJS = obj/mystrfunctions.o obj/myfilefunctions.o
 
-# Default target
+# Default Target
 all: $(TARGET)
 
-# Link object files to create executable
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+# Link the main program against the static library
+$(TARGET): $(STATIC_LIB) obj/main.o
+	$(CC) $(CFLAGS) -o $(TARGET) obj/main.o -L./lib -lmyutils
 
-# Compile source files into object files
+# Create the static library using ar
+$(STATIC_LIB): $(OBJS)
+	ar rcs $(STATIC_LIB) $(OBJS)
+
+# Compile object files
 obj/main.o: src/main.c
 	$(CC) $(CFLAGS) $(INC) -c src/main.c -o obj/main.o
 
@@ -25,5 +31,4 @@ obj/myfilefunctions.o: src/myfilefunctions.c
 
 # Clean rule
 clean:
-	rm -f obj/*.o bin/client
-
+	rm -f obj/*.o bin/* lib/*
