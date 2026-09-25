@@ -36,3 +36,19 @@ $(OBJ_DIR)/myfilefunctions.o: src/myfilefunctions.c
 # Clean rule
 clean:
 	rm -f $(OBJ_DIR)/*.o $(BIN_DIR)/* $(LIB_DIR)/*
+# Installation variables
+PREFIX = /usr/local
+MAN_DIR = $(PREFIX)/share/man/man3
+BIN_DIR_SYS = $(PREFIX)/bin
+
+# Install rule
+install: $(TARGET_DYNAMIC)
+	mkdir -p $(BIN_DIR_SYS)
+	mkdir -p $(MAN_DIR)
+	cp $(TARGET_DYNAMIC) $(BIN_DIR_SYS)/client_dynamic
+	chmod 755 $(BIN_DIR_SYS)/client_dynamic
+	cp lib/libmyutils.so $(PREFIX)/lib/
+	chmod 755 $(PREFIX)/lib/libmyutils.so
+	cp man/man3/mystrfunctions.3 $(MAN_DIR)/
+	chmod 644 $(MAN_DIR)/mystrfunctions.3
+	ldconfig
