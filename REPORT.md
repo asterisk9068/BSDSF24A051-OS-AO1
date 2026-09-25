@@ -18,3 +18,13 @@ The `ar` (archiver) command is used to create, modify, and extract files from ar
 
 **3. When you run nm on your client_static executable, are the symbols for functions like mystrlen present? [cite_start]What does this tell you about how static linking works?** [cite: 696, 697]
 Yes, the symbols for `mystrlen`, `mystrcpy`, etc., are present in the `client_static` executable. This proves that during static linking, the linker physically copies the compiled machine code for those functions out of the `.a` library and embeds it directly into the final executable file.
+## Feature 4: Dynamic Library Report
+
+**1. What does the -fPIC flag do, and why is it necessary for compiling object files that will be included in a dynamic library?**
+The `-fPIC` flag stands for "Position Independent Code." It is necessary for dynamic libraries because shared objects can be loaded into memory at any random address by different programs. Position-independent code uses relative addressing rather than absolute memory addresses, ensuring the library works correctly no matter where the operating system decides to place it in memory.
+
+**2. Compare the file sizes of client_static and client_dynamic. Explain why there is a difference.**
+The `client_static` executable is larger than `client_dynamic`. This is because static linking physically copies the code from the `.a` library directly into the executable file. Dynamic linking, however, leaves the executable small by merely inserting a reference to the `.so` library, relying on the operating system to load the shared code into memory only when the program is actually run.
+
+**3. Why did client_dynamic fail to run initially? Explain the role of the LD_LIBRARY_PATH environment variable in resolving this issue.**
+The program failed initially because the dynamic linker looks for shared libraries in standard system directories (like `/usr/lib` or `/lib`). It didn't know our custom library was inside our project's `./lib` folder. By modifying the `LD_LIBRARY_PATH` environment variable, we temporarily added our local `./lib` directory to the list of paths the system checks when attempting to load dynamic libraries, allowing the program to execute successfully.
